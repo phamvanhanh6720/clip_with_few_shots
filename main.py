@@ -7,7 +7,7 @@ from argparse import ArgumentParser
 # Pytorch and lightning imports
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
-from pytorch_lightning.loggers.neptune import NeptuneLogger
+from pytorch_lightning.loggers import WandbLogger
 
 # Model
 from project.few_shot import FewShot
@@ -22,17 +22,8 @@ if __name__=='__main__':
     parser = FewShot.add_model_specific_args(parser)
     args = parser.parse_args()
 
-    # Neptune logging
-    try:
-        # Neptune credentials. User-specific. You need to create you Neptune accout!
-        import neptune_credentials
-        logger = NeptuneLogger(api_key=neptune_credentials.key,
-                               project_name=neptune_credentials.project,
-                               params=vars(args), experiment_name='fewshot',
-                               offline_mode=args.no_logger)
-    except ImportError: # no neptune credentials, no logger
-        print("No Neptune logging")
-        logger = NeptuneLogger(offline_mode=True)
+    # Neptune credentials. User-specific. You need to create you Neptune accout!
+    wandb_logger = WandbLogger(project='few-shot-learning-clip', job_type='train')
 
     # Model instance
     few_model = FewShot(learning_rate=args.learning_rate)
@@ -50,7 +41,7 @@ if __name__=='__main__':
                                     filename='fewshot-{epoch:02d}-{acc:.2f}',
                                     mode='max')
 
-    trainer = pl.Trainer(gpus=1, precision=16, logger=logger, callbacks=[chkpoint_cb, stop_cb],
+    trainer = pl.Trainer(gpus=1, precision=16, logger=wandb_logger, callbacks=[chkpoint_cb, stop_cb],
                          max_epochs=args.max_epochs)
     trainer.fit(few_model, dm)
 

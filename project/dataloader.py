@@ -16,7 +16,35 @@ from torch.utils import data
 # sklearn
 from sklearn.model_selection import train_test_split
 
-CLASS_NAMES = ['airplane', 'bicycle', 'boat', 'bus', 'car', 'motorcycle', 'train', 'truck']
+CLASS_NAMES = [
+    "compact-cherry",
+    "mountain-dew",
+    "th-true-water",
+    "redbull",
+    "number-one",
+    "aquafina",
+    "dasani",
+    "cocacola",
+    "twister",
+    "tea-bottle",
+    "cam-fanta",
+    "ice+",
+    "sting",
+    "7up",
+    "lon-sprite",
+    "tra-xanh-khong-do",
+    "mirinda",
+    "dr-thanh",
+    "revive",
+    "pepsi",
+    "c2",
+    "wonderfarm",
+    "tra-o-long-tea+",
+    "lavie",
+    "nutriboost",
+    "wakeup247"
+  ]
+
 
 class FewShotDataset(data.Dataset):
     """Class representing dataset used for few shot learning task.
